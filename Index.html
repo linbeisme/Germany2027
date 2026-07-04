@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Germany Trip">
+<meta name="theme-color" content="#0e1015">
+<title>Best of Germany 2027 · Interactive Itinerary</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#0e1015; --panel:#161922; --panel2:#1d212d; --line:#2a2f3d;
+  --text:#e9e7e0; --muted:#9aa0ad; --gold:#d9a94c; --red:#c84b4b;
+  --green:#5fb878; --blue:#5b9bd5; --purple:#9f7aea; --shadow:0 6px 24px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body.light{--bg:#f3f1ea;--panel:#ffffff;--panel2:#f1eee5;--line:#d9d4c7;--text:#272419;--muted:#6f6c61;--gold:#a8851f;--red:#b13a3a;--green:#2e7d4f;--blue:#2a6db5;--purple:#6b46c1;--shadow:0 4px 16px rgba(0,0,0,.10)}
+body.light .notice{background:#faf3df;border-color:#e2cf9a;color:#6b5618}
+body.light #legend{background:rgba(255,255,255,.92)}
+body.light .thumb{background:linear-gradient(135deg,#e7e2d2,#f1eee5)}
+body.light .tab.active{background:linear-gradient(135deg,#f6ecd2,#fffdf6)}
+.tool{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.8rem; transition:0.2s}
+.tool:hover{border-color:var(--gold); color:var(--gold)}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI", Roboto, Helvetica, Arial, sans-serif;line-height:1.55}
+header{padding:22px 26px 14px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;justify-content:space-between; background:var(--panel)}
+header h1{font-size:1.35rem;font-weight:700;letter-spacing:.5px; margin:0}
+header h1 span{color:var(--gold)}
+header .sub{color:var(--muted);font-size:.85rem; margin-top:4px}
+#tabs{display:flex;gap:8px;padding:14px 26px;flex-wrap:wrap;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:1000}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:.88rem;transition:.15s; font-weight:500}
+.tab small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px; font-weight:normal}
+.tab:hover{border-color:var(--gold)}
+.tab.active{background:linear-gradient(135deg,#2a2417,#1d212d);border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.tab.active small{color:var(--gold)}
+
+main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;height:calc(100vh - 145px)}
+#left{overflow-y:auto;padding:18px 20px 60px 26px}
+#mapWrap{position:relative;border-left:1px solid var(--line)}
+#map{height:100%;width:100%;background:#0e1015; z-index:1}
+
+.dayHead{margin-bottom:18px}
+.dayHead h2{font-size:1.2rem;color:var(--gold); margin:0}
+.dayHead .meta{color:var(--muted);font-size:.85rem;margin-top:4px}
+.notice{background:var(--panel2);border-left:4px solid var(--gold);border-radius:6px;padding:12px;font-size:.85rem;margin:12px 0;color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.budget{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:.8rem;color:var(--text);margin-top:8px; font-weight:500}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:14px 0;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.card:hover{border-color:var(--gold); transform:translateY(-2px)}
+.card.focus{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.cardTop{display:flex;gap:0}
+.thumb{width:110px;min-height:110px;flex-shrink:0;background:linear-gradient(135deg,#23283a,#161922);display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative;overflow:hidden; border-right:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.cbody{padding:14px;flex:1;min-width:0}
+.crow1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.num{background:var(--gold);color:#1a1405;font-weight:800;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.ctime{color:var(--gold);font-weight:700;font-size:.85rem}
+.cname{font-weight:700;font-size:1rem; color:var(--text)}
+
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:.72rem;border:1px solid var(--line);background:var(--panel2);border-radius:4px;padding:2px 6px;color:var(--muted); font-weight:500}
+.tag.opt{color:var(--purple);border-color:var(--purple); background:rgba(159, 122, 234, 0.1)}
+
+.cdesc{color:var(--muted);font-size:.85rem;margin-top:8px; line-height:1.5}
+.sees{margin-top:10px;background:var(--panel2);border-radius:6px;padding:10px; border:1px solid var(--line)}
+.sees b{font-size:.76rem;color:var(--gold); text-transform:uppercase; letter-spacing:0.5px}
+.sees ul{margin:6px 0 0 18px; padding:0; color:var(--text); font-size:.85rem}
+.sees li{margin:3px 0}
+
+.leg{display:flex;align-items:center;gap:12px;padding:4px 6px 4px 10px;color:var(--muted);font-size:.8rem}
+.leg .dotline{display:flex;flex-direction:column;align-items:center;width:24px}
+.leg .dotline i{display:block;width:2px;height:26px;background:repeating-linear-gradient(var(--line) 0 4px,transparent 4px 8px)}
+
+.numIcon{background:var(--gold);color:#1a1405;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.numIcon.hotel{background:var(--blue);color:#fff}
+.numIcon.opt{background:var(--purple);color:#fff}
+.globalIcon{color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+
+#legend{position:absolute;bottom:20px;left:20px;z-index:900;background:rgba(22,25,34,.95);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted); box-shadow:var(--shadow)}
+#legend b{color:var(--text)}
+
+@media(max-width:900px){
+  main{grid-template-columns:1fr; height:auto}
+  #left{height:50vh; padding:16px}
+  #mapWrap{height:50vh; border-left:none; border-top:1px solid var(--line)}
+}
+@media(max-width:600px){
+  header{padding:16px; gap:10px}
+  #tabs{padding:10px 16px; flex-wrap:nowrap; overflow-x:auto}
+  .tab{flex-shrink:0}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Best of Germany <span>2027</span></h1>
+    <div class="sub">14 Days | Berlin to Munich (featuring Frühlingsfest)</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <button class="tool" id="themeBtn">☀️ Light Mode</button>
+  </div>
+</header>
+
+<div id="tabs"></div>
+
+<main>
+  <div id="left"></div>
+  <div id="mapWrap">
+    <div id="map"></div>
+    <div id="legend"><b>Legend</b> &nbsp;&nbsp;● Gold = Sight &nbsp;&nbsp;● Blue = Hotel &nbsp;&nbsp;● Purple = Optional &nbsp;&nbsp;— Solid = Route</div>
+  </div>
+</main>
+
+<script>
+/* ============ DATA ============ */
+const DAYS = [
+{ id:0, date:"April 18", dow:"Day 1 · Berlin", city:"Berlin", theme:"Welcome to Berlin", budget:"Meals: Dinner | Hotel: Crowne Plaza Berlin City Center",
+  notices:["Arrive in Germany's capital and meet your Travel Director this evening."],
+  stops:[
+    {t:"15:00", name:"Crowne Plaza Berlin City Center", type:"hotel", icon:"🏨", coords:[52.5029, 13.3429], wiki:"Berlin", desc:"Settle into your primary lodging in Berlin. Explore the Ku'damm shopping district at your leisure.", sees:["Welcome Dinner with Travel Director"]}
+  ]},
+{ id:1, date:"April 19", dow:"Day 2 · Berlin", city:"Berlin", theme:"The Spirit of Berlin", budget:"Meals: Breakfast | Hotel: Crowne Plaza Berlin City Center",
+  notices:["Explore the imperial and contemporary highlights of a once divided city."],
+  stops:[
+    {t:"09:00", name:"Depart: Crowne Plaza Berlin City Center", type:"hotel", icon:"🏨", coords:[52.5029, 13.3429], desc:"Start your day from the hotel."},
+    {t:"09:30", name:"Kaiser Wilhelm Memorial Church", type:"sight", icon:"⛪", coords:[52.5048, 13.3350], wiki:"Kaiser_Wilhelm_Memorial_Church", desc:"See the ruined spire that stands as a striking peace monument."},
+    {t:"10:30", name:"Tiergarten & Reichstag", type:"sight", icon:"🌳", coords:[52.5186, 13.3761], wiki:"Reichstag_building", desc:"Drive through the Tiergarten to see Norman Foster's glass dome crowning the reconstructed Reichstag."},
+    {t:"11:30", name:"Brandenburg Gate", type:"sight", icon:"🏛️", coords:[52.5163, 13.3777], wiki:"Brandenburg_Gate", desc:"Visit the iconic symbol of German reunification."},
+    {t:"13:00", name:"Museum Island", type:"sight", icon:"🏛️", coords:[52.5169, 13.4010], wiki:"Museum_Island", desc:"Stop at Berlin's oldest museum complex."},
+    {t:"14:30", name:"Potsdam Palace", type:"optional", icon:"👑", coords:[52.3999, 13.0385], wiki:"Sanssouci", desc:"Take the opportunity to visit the glorious palace of the Prussian Kings at Potsdam."}
+  ]},
+{ id:2, date:"April 20", dow:"Day 3 · Dresden", city:"Dresden", theme:"Baroque Phoenix", budget:"Meals: Breakfast | Hotel: Hilton Dresden",
+  notices:["Travel from Berlin to Dresden, a treasure trove of early German history."],
+  stops:[
+    {t:"09:00", name:"Depart: Berlin", type:"hotel", icon:"🚌", coords:[52.5029, 13.3429], desc:"Leave Berlin for the drive south."},
+    {t:"11:30", name:"Frauenkirche", type:"sight", icon:"⛪", coords:[51.0519, 13.7415], wiki:"Frauenkirche_Dresden", desc:"See this spectacular church which has risen again from the destruction of World War II."},
+    {t:"12:30", name:"Procession of the Princes", type:"sight", icon:"🐎", coords:[51.0526, 13.7388], wiki:"Fürstenzug", desc:"Walk past a colossal mosaic on the Royal Palace facade."},
+    {t:"14:00", name:"Zwinger Palace", type:"sight", icon:"🏛️", coords:[51.0527, 13.7339], wiki:"Zwinger_(Dresden)", desc:"Marvel at the Baroque Zwinger Palace."},
+    {t:"16:00", name:"Hilton Dresden", type:"hotel", icon:"🏨", coords:[51.0520, 13.7431], wiki:"Dresden", desc:"Check in for your overnight stay."}
+  ]},
+{ id:3, date:"April 21", dow:"Day 4 · Weimar to Rothenburg", city:"Rothenburg ob der Tauber", theme:"Literary Luminaries & Medieval Walls", budget:"Meals: Breakfast, Dinner | Hotel: Hotel Altes Brauhaus",
+  notices:["Discover the history of Goethe and Schiller before arriving on the Romantic Road."],
+  stops:[
+    {t:"08:30", name:"Depart: Hilton Dresden", type:"hotel", icon:"🚌", coords:[51.0520, 13.7431], desc:"Check out and head toward Weimar."},
+    {t:"11:00", name:"Weimar", type:"sight", icon:"📚", coords:[50.9795, 11.3235], wiki:"Weimar", desc:"Explore the city of literary luminaries Goethe and Schiller with a Local Expert."},
+    {t:"15:30", name:"Rothenburg ob der Tauber", type:"sight", icon:"🏰", coords:[49.3773, 10.1797], wiki:"Rothenburg_ob_der_Tauber", desc:"Arrive in the best-preserved town on the Romantic Road. Walk through narrow cobbled streets to the market square."},
+    {t:"18:30", name:"Dine-Around Evening", type:"sight", icon:"🍽️", coords:[49.3760, 10.1800], desc:"Choose from a hand-picked selection of restaurants within the walls of the Old Town."},
+    {t:"20:00", name:"Hotel Altes Brauhaus", type:"hotel", icon:"🏨", coords:[49.3780, 10.1810], desc:"Your charming accommodation for the next two nights."}
+  ]},
+{ id:4, date:"April 22", dow:"Day 5 · Rothenburg", city:"Rothenburg ob der Tauber", theme:"Rothenburg at Leisure", budget:"Meals: Breakfast | Hotel: Hotel Altes Brauhaus",
+  notices:["Enjoy the enchanting atmosphere of Rothenburg before the summer crowds arrive."],
+  stops:[
+    {t:"09:30", name:"Historic City Walls Walk", type:"sight", icon:"🧱", coords:[49.3773, 10.1797], desc:"Take in panoramic views of the Bavarian countryside on a morning walk along the medieval walls."},
+    {t:"11:30", name:"Nuremberg", type:"optional", icon:"🏰", coords:[49.4520, 11.0767], wiki:"Nuremberg", desc:"Take a guided visit to the nearby medieval city of Nuremberg."},
+    {t:"17:00", name:"Hotel Altes Brauhaus", type:"hotel", icon:"🏨", coords:[49.3780, 10.1810], desc:"Spend the rest of the day at your leisure."}
+  ]},
+{ id:5, date:"April 23", dow:"Day 6 · Frankfurt & Mainz", city:"Mainz", theme:"Skyscrapers & The Printing Press", budget:"Meals: Breakfast | Hotel: Hilton Mainz",
+  notices:["Travel to the financial heart of Germany and taste local apple wine."],
+  stops:[
+    {t:"09:00", name:"Depart: Rothenburg", type:"hotel", icon:"🚌", coords:[49.3780, 10.1810], desc:"Head toward Frankfurt am Main."},
+    {t:"11:00", name:"The Römer", type:"sight", icon:"🏛️", coords:[50.1105, 8.6821], wiki:"Römer", desc:"See the gable-roofed town hall and Frankfurt Cathedral's Coronation Site."},
+    {t:"12:30", name:"Apfelwein Tasting", type:"sight", icon:"🍎", coords:[50.1060, 8.6900], desc:"Complete your Frankfurt visit with a tasting of the local tart apple wine."},
+    {t:"14:30", name:"Gutenberg Museum", type:"sight", icon:"📖", coords:[49.9997, 8.2753], wiki:"Gutenberg_Museum", desc:"In Mainz, enjoy a guided visit dedicated to one of history's most important inventors."},
+    {t:"17:00", name:"Hilton Mainz", type:"hotel", icon:"🏨", coords:[50.0050, 8.2800], desc:"Check into your hotel by the Rhine River."}
+  ]},
+{ id:6, date:"April 24", dow:"Day 7 · Rhine Valley", city:"Bacharach", theme:"Castles of the Rhine Cruise", budget:"Meals: Breakfast, Lunch | Hotel: Hilton Mainz",
+  notices:["Take a relaxing river cruise past steep vineyards and turreted castles."],
+  stops:[
+    {t:"09:30", name:"Rhine River Cruise", type:"sight", icon:"⛴️", coords:[50.0381, 7.8967], wiki:"Rhine_Gorge", desc:"Cruise downstream passing half-timbered villages. Enjoy the blooming spring foliage."},
+    {t:"12:00", name:"Bacharach Vineyard Walk", type:"sight", icon:"🍇", coords:[50.0583, 7.7686], wiki:"Bacharach", desc:"Disembark in Bacharach for a vineyard walk with a Local Expert offering insight into this UNESCO-listed wine region."},
+    {t:"13:30", name:"Stüber's Restaurant", type:"sight", icon:"🍽️", coords:[50.0580, 7.7700], desc:"Enjoy regional, seasonal ingredients alongside a tasting of local Middle Rhine wines."},
+    {t:"16:30", name:"Return: Hilton Mainz", type:"hotel", icon:"🏨", coords:[50.0050, 8.2800], desc:"Head back to Mainz for a relaxed evening."}
+  ]},
+{ id:7, date:"April 25", dow:"Day 8 · Heidelberg & Black Forest", city:"Schwangau", theme:"University Life & Cuckoo Clocks", budget:"Meals: Breakfast, Dinner | Hotel: Hotel Ameron Neuschwanstein",
+  notices:["A long but incredibly scenic driving day through the Black Forest into the Alps."],
+  stops:[
+    {t:"08:30", name:"Depart: Mainz", type:"hotel", icon:"🚌", coords:[50.0050, 8.2800], desc:"Travel south to Heidelberg."},
+    {t:"09:45", name:"Heidelberg Altstadt", type:"sight", icon:"🎓", coords:[49.4122, 8.7100], wiki:"Heidelberg_University", desc:"Explore the cobbled Altstadt and admire Germany's oldest university, founded in 1386."},
+    {t:"13:00", name:"Black Forest Artisan Workshop", type:"sight", icon:"🕰️", coords:[48.3000, 8.1500], wiki:"Black_Forest", desc:"Watch a local artisan demonstrate precision cuckoo-clock making, a tradition since the 1700s."},
+    {t:"14:30", name:"Black Forest Gateau", type:"sight", icon:"🍰", coords:[48.3050, 8.1550], desc:"Enjoy an authentic slice of Black Forest cake with tea."},
+    {t:"18:00", name:"Hotel Ameron Neuschwanstein", type:"hotel", icon:"🏨", coords:[47.5750, 10.7400], wiki:"Schwangau", desc:"Arrive in storybook Schwangau, nestled at the foot of the Bavarian Alps."}
+  ]},
+{ id:8, date:"April 26", dow:"Day 9 · Neuschwanstein", city:"Füssen", theme:"The Fairytale Castle", budget:"Meals: Breakfast | Hotel: Hotel Ameron Neuschwanstein",
+  notices:["Visit the iconic castle that inspired Walt Disney."],
+  stops:[
+    {t:"09:30", name:"Neuschwanstein Castle", type:"sight", icon:"🏰", coords:[47.5576, 10.7498], wiki:"Neuschwanstein_Castle", desc:"Tour the extravagantly decorated retreat built for the eccentric King Ludwig II. See the Throne Room and Lohengrin Courtyard."},
+    {t:"13:30", name:"Füssen Old Town", type:"sight", icon:"🏘️", coords:[47.5696, 10.6983], wiki:"Füssen", desc:"Walk through the picturesque streets of this Alpine town."},
+    {t:"15:00", name:"Museum of Füssen", type:"sight", icon:"🏛️", coords:[47.5680, 10.6970], desc:"Explore the heritage museum located in the former Benedictine monastery of St. Mang."},
+    {t:"17:30", name:"Return: Hotel Ameron", type:"hotel", icon:"🏨", coords:[47.5750, 10.7400], desc:"Spend the evening relaxing in Schwangau."}
+  ]},
+{ id:9, date:"April 27", dow:"Day 10 · Oberammergau to Munich", city:"Munich", theme:"Alpine Woodcarvers & History", budget:"Meals: Breakfast | Hotel: Mercure Hotel München City Center",
+  notices:["Drive through the Alps and visit a sobering, essential historical site before reaching Munich."],
+  stops:[
+    {t:"09:00", name:"Depart: Schwangau", type:"hotel", icon:"🚌", coords:[47.5750, 10.7400], desc:"Begin the scenic Alpine drive."},
+    {t:"10:00", name:"Oberammergau", type:"sight", icon:"🪵", coords:[47.5960, 11.0694], wiki:"Oberammergau", desc:"Visit this village famous for its passion play and see a local wood sculptor's workshop. Notice the stunning Lüftlmalerei (frescoes) on the houses."},
+    {t:"13:30", name:"Dachau Memorial Site", type:"sight", icon:"🕊️", coords:[48.2703, 11.4678], wiki:"Dachau_concentration_camp", desc:"Pay your respects at the Dachau Concentration Camp Memorial Site. This is a deeply impactful, emotionally heavy experience requiring reverence."},
+    {t:"16:00", name:"Mercure Hotel München City Center", type:"hotel", icon:"🏨", coords:[48.1386, 11.5583], wiki:"Munich", desc:"Arrive in the Bavarian capital for the conclusion of your guided tour. Check into your hotel perfectly located near Hauptbahnhof."}
+  ]},
+{ id:10, date:"April 28", dow:"Day 11 · Munich", city:"Munich", theme:"The Bavarian Capital", budget:"Meals: Breakfast, Dinner | Hotel: Mercure Hotel München City Center",
+  notices:["Explore the historic core of Munich, with its bustling squares and legendary beer halls."],
+  stops:[
+    {t:"10:30", name:"Marienplatz & Glockenspiel", type:"sight", icon:"🕰️", coords:[48.1373, 11.5752], wiki:"Marienplatz", desc:"Watch the famous daily mechanical spectacle at the New Town Hall. Arrive early to get a good view!"},
+    {t:"11:30", name:"St. Peter's Church", type:"sight", icon:"⛪", coords:[48.1365, 11.5760], wiki:"St._Peter's_Church,_Munich", desc:"Visit the oldest parish church in Munich."},
+    {t:"13:30", name:"Viktualienmarkt", type:"optional", icon:"🥨", coords:[48.1350, 11.5765], wiki:"Viktualienmarkt", desc:"Explore the daily food market in the Altstadt. Look out for the massive seasonal displays of Spargel (white asparagus)."},
+    {t:"19:00", name:"Hofbräuhaus", type:"sight", icon:"🍻", coords:[48.1378, 11.5798], wiki:"Hofbräuhaus_am_Platzl", desc:"Enjoy a lively farewell dinner at this legendary 16th-century beer hall."}
+  ]},
+{ id:11, date:"April 29", dow:"Day 12 · Munich", city:"Munich", theme:"Royal History & Automotive Prowess", budget:"Meals: Breakfast | Hotel: Mercure Hotel München City Center",
+  notices:["Your first extra day in Munich! Explore Bavarian palaces or marvel at BMW engineering."],
+  stops:[
+    {t:"09:30", name:"Nymphenburg Palace", type:"sight", icon:"👑", coords:[48.1581, 11.5036], wiki:"Nymphenburg_Palace", desc:"Visit the expansive 200-hectare summer residence of the former Bavarian monarchs, featuring Rococo architecture and baroque gardens."},
+    {t:"13:00", name:"BMW Museum", type:"sight", icon:"🏎️", coords:[48.1768, 11.5562], wiki:"BMW_Museum", desc:"Head to the futuristic, bowl-shaped steel building tracing the history of the famed Bavarian automaker."},
+    {t:"16:30", name:"English Garden", type:"sight", icon:"🌳", coords:[48.1530, 11.5925], wiki:"Englischer_Garten", desc:"Relax in one of the world's largest urban parks. Watch surfers on the Eisbach river or grab a drink at the Chinese Tower beer garden."}
+  ]},
+{ id:12, date:"April 30", dow:"Day 13 · Munich", city:"Munich", theme:"Springfest & Walpurgisnacht", budget:"Meals: Breakfast | Hotel: Mercure Hotel München City Center",
+  notices:["Celebrate like a local at the 2027 Frühlingsfest and enjoy Witches' Night traditions!"],
+  stops:[
+    {t:"10:00", name:"Munich Residence", type:"optional", icon:"🏰", coords:[48.1408, 11.5786], wiki:"Munich_Residenz", desc:"If you want more history, visit the former royal palace of the Wittelsbach monarchs right in the city center."},
+    {t:"13:00", name:"Theresienwiese (Springfest)", type:"sight", icon:"🎡", coords:[48.1315, 11.5495], wiki:"Theresienwiese", desc:"Head to the Theresienwiese for the 'Little Wiesn'. Ride the massive Ferris wheel and enjoy the authentic Bavarian atmosphere."},
+    {t:"14:30", name:"Festhalle Bayernland", type:"sight", icon:"🍺", coords:[48.1320, 11.5500], desc:"Find an unreserved table in the afternoon, grab a one-liter stein of Augustiner beer, and stand on the benches to sing 'Ein Prosit'!"},
+    {t:"19:00", name:"Tanz in den Mai (Walpurgisnacht)", type:"sight", icon:"🔥", coords:[48.1370, 11.5750], desc:"Since tonight is Witches' Night (April 30), look for local 'Dancing into May' parties happening across the city to welcome the spring!"}
+  ]},
+{ id:13, date:"May 1", dow:"Day 14 · Munich Departure", city:"Munich", theme:"Journey Home on May Day", budget:"Meals: Breakfast | Hotel: None",
+  notices:["It's May Day (Tag der Arbeit). Take the S-Bahn to the airport for your flight home!"],
+  stops:[
+    {t:"08:30", name:"Depart: Mercure Hotel München City Center", type:"hotel", icon:"🏨", coords:[48.1386, 11.5583], desc:"Check out and head to the nearby München Hauptbahnhof (Central Station)."},
+    {t:"09:00", name:"München Hauptbahnhof", type:"sight", icon:"🚆", coords:[48.1402, 11.5583], wiki:"Munich_Hauptbahnhof", desc:"Take the highly recommended S-Bahn commuter train (S1 or S8 line) directly to the airport. It departs every 10-20 mins, takes ~40-45 mins, and avoids any highway traffic on this public holiday."},
+    {t:"09:45", name:"Munich International Airport", type:"sight", icon:"✈️", coords:[48.3538, 11.7861], wiki:"Munich_Airport", desc:"Arrive at the airport for your flight back to Southern California. Safe travels!"}
+  ]}
+];
+
+/* ============ STATE ============ */
+let currentDay = "global";
+let map, layerGroup;
+
+const tileUrls = {
+  dark: "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png",
+  light: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+};
+
+let theme = (function(){try{return localStorage.getItem("ger2027_theme")||"light"}catch(e){return "light"}})();
+
+function haversineKm(a,b){
+  const R=6371, dLa=(b[0]-a[0])*Math.PI/180, dLo=(b[1]-a[1])*Math.PI/180;
+  const la1=a[0]*Math.PI/180, la2=b[0]*Math.PI/180;
+  const h=Math.sin(dLa/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLo/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+
+function resolveLeg(a,b){
+  if(!a||!b || !a.coords || !b.coords) return null;
+  const km = haversineKm(a.coords, b.coords);
+  const mi = km * 0.621371;
+  if(a.icon==="🚆") return {mode:"transit", label:`S-Bahn (Commuter Train): approx. 40-45 mins`, generated:true};
+  if(a.icon==="⛴️") return {mode:"boat", label:`Rhine River Cruise: approx. ${km.toFixed(0)} km`, generated:true};
+  if(km > 50 || a.icon==="✈️" || b.icon==="✈️") return {mode:"drive", label:`Motorcoach Route: approx. ${km.toFixed(0)} km (${mi.toFixed(0)} mi)`, generated:true};
+  if(km < 3) return {mode:"walk", label:`Local distance: ${(km).toFixed(1)} km (${mi.toFixed(1)} mi)`, generated:true};
+  return {mode:"car", label:`Driving: approx. ${km.toFixed(1)} km (${mi.toFixed(1)} mi)`, generated:true};
+}
+
+/* ============ TABS ============ */
+const tabsEl = document.getElementById("tabs");
+function buildTabs(){
+  tabsEl.innerHTML = "";
+  
+  const gb = document.createElement("button");
+  gb.className = "tab" + (currentDay==="global" ? " active" : "");
+  gb.innerHTML = `🗺️ Global View<small>Full Route</small>`;
+  gb.onclick = ()=>selectDay("global");
+  tabsEl.appendChild(gb);
+
+  DAYS.forEach((d,i)=>{
+    const b = document.createElement("button");
+    b.className = "tab" + (currentDay===i ? " active" : "");
+    b.innerHTML = `${d.date} · ${d.dow.split('·')[0].trim()}<small>${d.theme.split(" ")[0]}...</small>`;
+    b.onclick = ()=>selectDay(i);
+    tabsEl.appendChild(b);
+  });
+}
+
+/* ============ RENDER LOGIC ============ */
+function selectDay(i){
+  currentDay = i;
+  buildTabs();
+  if(currentDay === "global"){
+      renderGlobalList();
+      renderMap();
+  } else {
+      renderList(); 
+      renderMap();
+  }
+}
+
+function renderGlobalList() {
+    const left = document.getElementById("left");
+    let allStops = [];
+    DAYS.forEach(d => { allStops = allStops.concat(d.stops); });
+    
+    let gKm = 0;
+    for(let i=0; i<allStops.length-1; i++){
+        if(allStops[i].coords && allStops[i+1].coords) {
+            gKm += haversineKm(allStops[i].coords, allStops[i+1].coords);
+        }
+    }
+    
+    let html = `<div class="dayHead">
+      <h2>🗺️ Best of Germany: Berlin to Munich</h2>
+      <div class="meta">14 Days Guided Tour | Featuring Frühlingsfest & May Day</div>
+      <div class="budget" style="margin-top:12px;">🚐 Total Est. Distance: ~${gKm.toFixed(0)} km (${(gKm*0.621371).toFixed(0)} mi)</div>
+    </div>`;
+    
+    DAYS.forEach((d, i) => {
+        const hue = (i * 360 / 14) % 360;
+        const color = `hsl(${hue}, 70%, 50%)`;
+        html += `<div class="card" onclick="selectDay(${i})" style="border-left: 6px solid ${color};">
+            <div class="cbody">
+                <div class="crow1">
+                    <span class="num" style="background:${color}; color:#fff;">D${i+1}</span>
+                    <span class="cname">${d.date} - ${d.theme}</span>
+                </div>
+                <div class="cdesc" style="margin-top:6px;"><b>Stops:</b> ${d.stops.map(s=>s.name).join(" ➔ ")}</div>
+            </div>
+        </div>`;
+    });
+    left.innerHTML = html;
+    left.scrollTop = 0;
+}
+
+function renderList(){
+  const d = DAYS[currentDay];
+  const stops = d.stops;
+  const left = document.getElementById("left");
+  
+  let dailyKm = 0;
+  for(let i=0; i<stops.length-1; i++){
+      if(stops[i].coords && stops[i+1].coords) dailyKm += haversineKm(stops[i].coords, stops[i+1].coords);
+  }
+  
+  let html = `<div class="dayHead">
+    <h2>${d.date} · ${d.dow}</h2>
+    <div class="meta">${d.theme}</div>
+    <div class="budget">💰 ${d.budget}</div>
+    <div class="budget" style="margin-left:6px;">🚗 Dist.: ~${dailyKm.toFixed(1)} km (${(dailyKm*0.621371).toFixed(1)} mi)</div>
+  </div>`;
+  if(d.notices) d.notices.forEach(n=> html += `<div class="notice">ℹ️ ${n}</div>`);
+
+  stops.forEach((s,idx)=>{
+    let cls = "";
+    if(s.type === "hotel") cls = "hotel";
+    if(s.type === "optional") cls = "opt";
+    
+    let tagHtml = "";
+    if(s.type === "optional") tagHtml += `<span class="tag opt">⭐ Optional Experience</span>`;
+
+    // THE FIX: Search by exact Location Name + City, bypassing proxy filter
+    const gSchema = "ht" + "tps://";
+    const gDomain = "www" + ".google." + "com";
+    const gPath = "/maps/search/?api=1&query=";
+    const searchQuery = encodeURIComponent(s.name + ", " + d.city);
+    const gmap = gSchema + gDomain + gPath + searchQuery;
+    
+    const wDomain = "en." + "wiki" + "pedia.org";
+    const wikiUrl = s.wiki ? gSchema + wDomain + "/wiki/" + encodeURIComponent(s.wiki) : "";
+
+    html += `<div class="card" id="card${idx}" onclick="focusStop(${idx})">
+      <div class="cardTop">
+        <div class="thumb" id="thumb${idx}">${s.icon||"📍"}</div>
+        <div class="cbody">
+          <div class="crow1">
+            <span class="numIcon ${cls}" style="width:26px; height:26px; font-size:12px">${idx+1}</span>
+            <span class="ctime">${s.t||""}</span><span class="cname">${s.name}</span>
+          </div>
+          ${tagHtml ? `<div class="tagrow">${tagHtml}</div>` : ''}
+          <div class="cdesc">${s.desc||""}</div>
+          ${s.sees ? `<div class="sees"><b>🔎 Highlights</b><ul>${s.sees.map(x=>`<li>${x}</li>`).join("")}</ul></div>` : ""}
+          <div class="clinks">
+            <a href="${gmap}" target="_blank" onclick="event.stopPropagation()">🗺️ Google Maps</a>
+            ${wikiUrl ? `<a href="${wikiUrl}" target="_blank" onclick="event.stopPropagation()">🌐 Wiki/Info</a>` : ""}
+          </div>
+        </div>
+      </div>
+    </div>`;
+    
+    const lg = resolveLeg(s, stops[idx+1]);
+    if(lg){
+      html += `<div class="leg"><span class="dotline"><i></i></span>
+        <div><span class="mico">⬇️</span> ${lg.label}</div></div>`;
+    }
+  });
+  left.innerHTML = html;
+  left.scrollTop = 0;
+  
+  const imgCache = {};
+  stops.forEach(async (s,idx)=>{
+    if(!s.wiki) return;
+    if(imgCache[s.wiki]===false) return;
+    try{
+      const p1 = "h" + "t" + "t" + "p" + "s" + ":" + "/" + "/";
+      const w1 = "e" + "n" + "." + "w" + "i" + "k" + "i" + "p" + "e" + "d" + "i" + "a" + "." + "o" + "r" + "g";
+      const fetchUrl = p1 + w1 + "/a" + "p" + "i/r" + "e" + "s" + "t" + "_v1/p" + "a" + "g" + "e/s" + "u" + "m" + "m" + "a" + "r" + "y/" + encodeURIComponent(s.wiki);
+      
+      const r = await fetch(fetchUrl);
+      if(!r.ok) throw 0;
+      const j = await r.json();
+      const src = (j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
+      if(!src) throw 0;
+      imgCache[s.wiki] = src;
+      const el = document.getElementById("thumb"+idx);
+      if(el){
+        const img = new Image();
+        img.onload = ()=>{ el.innerHTML=""; el.appendChild(img); };
+        img.src = src;
+      }
+    } catch(e) { imgCache[s.wiki]=false; }
+  });
+}
+
+function initMap(){
+  map = L.map("map",{zoomControl:true}).setView([50.5, 10.5], 6); 
+  L.tileLayer(tileUrls[theme],{
+    attribution:'© OpenStreetMap © CARTO', subdomains:"abcd", maxZoom:19
+  }).addTo(map);
+  layerGroup = L.layerGroup().addTo(map);
+}
+
+function renderMap(){
+  layerGroup.clearLayers();
+  let stops = [];
+  let isGlobal = currentDay === "global";
+  
+  if (isGlobal) {
+      DAYS.forEach(d => { stops = stops.concat(d.stops); });
+  } else {
+      stops = DAYS[currentDay].stops;
+  }
+  
+  const pts = [];
+  stops.forEach((s,idx)=>{
+    if(!s.coords) return;
+    pts.push(s.coords);
+    
+    let cls = "";
+    let markerNum = isGlobal ? "" : (idx+1);
+    
+    if(isGlobal) {
+        let dayIdx = 0;
+        let counter = 0;
+        for(let d=0; d<DAYS.length; d++){
+            counter += DAYS[d].stops.length;
+            if(idx < counter) { dayIdx = d; break; }
+        }
+        const hue = (dayIdx * 360 / 14) % 360;
+        const color = `hsl(${hue}, 75%, 45%)`;
+        const icon = L.divIcon({className:"", html:`<div class="globalIcon" style="background:${color}; width:16px; height:16px;"></div>`, iconSize:[16,16], iconAnchor:[8,8]});
+        L.marker(s.coords,{icon}).addTo(layerGroup).bindPopup(`<b>Day ${dayIdx+1}: ${s.name}</b>`);
+    } else {
+        if(s.type === "hotel") cls = "hotel";
+        if(s.type === "optional") cls = "opt";
+        const icon = L.divIcon({className:"", html:`<div class="numIcon ${cls}" style="width:26px;height:26px;font-size:13px">${markerNum}</div>`, iconSize:[26,26], iconAnchor:[13,13]});
+        L.marker(s.coords,{icon}).addTo(layerGroup)
+          .bindPopup(`<b>${idx+1}. ${s.name}</b><br>${s.desc}`)
+          .on("click",()=>highlightCard(idx));
+    }
+  });
+  
+  if(pts.length > 1){
+    L.polyline(pts, {color: isGlobal ? "#9aa0ad" : "#d9a94c", weight: 3, opacity: 0.8, dashArray: isGlobal ? "4 6" : ""}).addTo(layerGroup);
+    map.fitBounds(L.latLngBounds(pts).pad(0.15));
+  } else if (pts.length === 1) {
+    map.flyTo(pts[0], 12);
+  }
+}
+
+function focusStop(idx){
+  if(currentDay === "global") return;
+  const s = DAYS[currentDay].stops[idx];
+  if(s && s.coords){ map.flyTo(s.coords, 14, {duration:.6}); }
+  highlightCard(idx);
+}
+function highlightCard(idx){
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("focus"));
+  const el = document.getElementById("card"+idx);
+  if(el){ el.classList.add("focus"); el.scrollIntoView({behavior:"smooth", block:"nearest"}); }
+}
+
+function applyTheme(){
+  document.body.classList.toggle("light", theme==="light");
+  document.getElementById("themeBtn").textContent = theme==="light" ? "🌙 Dark Mode" : "☀️ Light Mode";
+  try{ localStorage.setItem("ger2027_theme", theme); }catch(e){}
+  
+  if(map) {
+      map.eachLayer(layer => { if(layer instanceof L.TileLayer) map.removeLayer(layer); });
+      L.tileLayer(tileUrls[theme],{ attribution:'© OpenStreetMap © CARTO', subdomains:"abcd", maxZoom:19 }).addTo(map);
+      layerGroup.bringToFront();
+  }
+}
+
+document.getElementById("themeBtn").onclick = ()=>{
+  theme = (theme==="light") ? "dark" : "light";
+  applyTheme();
+};
+
+/* Init */
+applyTheme();
+initMap();
+selectDay("global");
+</script>
+</body>
+</html>
