@@ -25,21 +25,72 @@ body.light .thumb{background:linear-gradient(135deg,#e7e2d2,#f1eee5)}
 body.light .tab.active{background:linear-gradient(135deg,#f6ecd2,#fffdf6)}
 .tool{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.8rem; transition:0.2s}
 .tool:hover{border-color:var(--gold); color:var(--gold)}
-body{background:var(--bg);color:var(--text);font-family:"Segoe UI", Roboto, Helvetica, Arial, sans-serif;line-height:1.55}
+
+/* 3D Professional Toggle Button */
+.btn-3d {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #2a2f3d, #161922);
+  border: 1px solid #000;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15);
+  color: #e9e7e0;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+  transition: all 0.1s;
+}
+.btn-3d:active { box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); transform: translateY(1px); }
+body.light .btn-3d {
+  background: linear-gradient(to bottom, #ffffff, #e6e6e6);
+  border: 1px solid #ccc;
+  color: #333;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI", Roboto, Helvetica, Arial, sans-serif;line-height:1.55;display:flex;flex-direction:column;overflow:hidden}
 header{padding:22px 26px 14px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;justify-content:space-between; background:var(--panel)}
 header h1{font-size:1.35rem;font-weight:700;letter-spacing:.5px; margin:0}
 header h1 span{color:var(--gold)}
 header .sub{color:var(--muted);font-size:.85rem; margin-top:4px}
-#tabs{display:flex;gap:8px;padding:14px 26px;flex-wrap:wrap;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:1000}
-.tab{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:.88rem;transition:.15s; font-weight:500}
+
+.menu-controls { display: flex; gap: 10px; padding: 12px 26px; background: var(--bg); align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+
+/* Arrow Scrolling & Tabs Container */
+.tabs-container { display: flex; align-items: center; background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 1000; transition: max-height 0.3s ease, opacity 0.3s ease; overflow: hidden; max-height: 120px; }
+.tabs-container.collapsed { max-height: 0; opacity: 0; border-bottom: none; }
+
+#tabs { display: flex; gap: 8px; padding: 14px 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; flex-grow: 1; }
+#tabs::-webkit-scrollbar { display: none; }
+
+.scroll-btn {
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  cursor: pointer;
+  margin: 0 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: 0.2s;
+  font-size: 14px;
+}
+.scroll-btn:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.05); }
+
+.tab{flex-shrink:0;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:.88rem;transition:.15s; font-weight:500}
 .tab small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px; font-weight:normal}
 .tab:hover{border-color:var(--gold)}
 .tab.active{background:linear-gradient(135deg,#2a2417,#1d212d);border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
 .tab.active small{color:var(--gold)}
 
-main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;height:calc(100vh - 145px)}
+main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;flex:1;min-height:0}
 #left{overflow-y:auto;padding:18px 20px 60px 26px}
-#mapWrap{position:relative;border-left:1px solid var(--line)}
+#mapWrap{position:relative;border-left:1px solid var(--line);min-height:0}
 #map{height:100%;width:100%;background:#0e1015; z-index:1}
 
 .dayHead{margin-bottom:18px}
@@ -69,6 +120,9 @@ main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;height:calc
 .sees b{font-size:.76rem;color:var(--gold); text-transform:uppercase; letter-spacing:0.5px}
 .sees ul{margin:6px 0 0 18px; padding:0; color:var(--text); font-size:.85rem}
 .sees li{margin:3px 0}
+.clinks { margin-top: 10px; font-size: 0.85rem; }
+.clinks a { display: inline-block; margin-right: 10px; color: var(--blue); text-decoration: none; font-weight: 500; }
+.clinks a:hover { text-decoration: underline; }
 
 .leg{display:flex;align-items:center;gap:12px;padding:4px 6px 4px 10px;color:var(--muted);font-size:.8rem}
 .leg .dotline{display:flex;flex-direction:column;align-items:center;width:24px}
@@ -81,16 +135,20 @@ main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;height:calc
 
 #legend{position:absolute;bottom:20px;left:20px;z-index:900;background:rgba(22,25,34,.95);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted); box-shadow:var(--shadow)}
 #legend b{color:var(--text)}
+#mapStatus{position:absolute;top:14px;right:14px;z-index:900;background:rgba(22,25,34,.94);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:.76rem;color:var(--muted);box-shadow:var(--shadow);max-width:min(360px,70%)}
+body.light #mapStatus{background:rgba(255,255,255,.94)}
+.route-note{font-size:.72rem;color:var(--muted);margin-top:3px}
+.route-error{color:var(--red)}
 
 @media(max-width:900px){
-  main{grid-template-columns:1fr; height:auto}
-  #left{height:50vh; padding:16px}
-  #mapWrap{height:50vh; border-left:none; border-top:1px solid var(--line)}
+  body{overflow:auto;display:block}
+  main{display:block;height:auto}
+  #left{height:auto;max-height:54vh;padding:16px}
+  #mapWrap{height:46vh;min-height:360px;border-left:none;border-top:1px solid var(--line)}
 }
 @media(max-width:600px){
   header{padding:16px; gap:10px}
-  #tabs{padding:10px 16px; flex-wrap:nowrap; overflow-x:auto}
-  .tab{flex-shrink:0}
+  .scroll-btn { width: 28px; height: 28px; margin: 0 4px; font-size: 12px; }
 }
 </style>
 </head>
@@ -101,18 +159,27 @@ main{display:grid;grid-template-columns:minmax(390px, 42%) 1fr;gap:0;height:calc
     <h1>Best of Germany <span>2027</span></h1>
     <div class="sub">14 Days | Berlin to Munich (featuring Frühlingsfest)</div>
   </div>
-  <div style="display:flex;gap:10px;align-items:center">
-    <button class="tool" id="themeBtn">☀️ Light Mode</button>
-  </div>
 </header>
 
-<div id="tabs"></div>
+<div class="menu-controls">
+  <button class="tool btn-3d" id="toggleTabsBtn" type="button" aria-expanded="true" aria-controls="tabsWrapper">↕️ Hide Daily Menu</button>
+  <div>
+    <button class="tool btn-3d" id="themeBtn" type="button">☀️ Light Mode</button>
+  </div>
+</div>
+
+<div class="tabs-container" id="tabsWrapper">
+    <button class="scroll-btn" id="scrollLeft" type="button" title="Scroll Left" aria-label="Scroll day tabs left">&#10094;</button>
+    <div id="tabs"></div>
+    <button class="scroll-btn" id="scrollRight" type="button" title="Scroll Right" aria-label="Scroll day tabs right">&#10095;</button>
+</div>
 
 <main>
   <div id="left"></div>
   <div id="mapWrap">
     <div id="map"></div>
-    <div id="legend"><b>Legend</b> &nbsp;&nbsp;● Gold = Sight &nbsp;&nbsp;● Blue = Hotel &nbsp;&nbsp;● Purple = Optional &nbsp;&nbsp;— Solid = Route</div>
+    <div id="mapStatus" role="status" aria-live="polite">Preparing route…</div>
+    <div id="legend"><b>Legend</b> &nbsp;● Gold = Sight &nbsp;● Blue = Hotel &nbsp;● Purple = Optional<br>— Gold = Road &nbsp;⋯ Green = Walk &nbsp;⋯ Blue = Boat/Transit &nbsp;-- Purple = Optional</div>
   </div>
 </main>
 
@@ -171,6 +238,7 @@ const DAYS = [
 { id:6, date:"April 24", dow:"Day 7 · Rhine Valley", city:"Bacharach", theme:"Castles of the Rhine Cruise", budget:"Meals: Breakfast, Lunch | Hotel: Hilton Mainz",
   notices:["Take a relaxing river cruise past steep vineyards and turreted castles."],
   stops:[
+    {t:"08:45", name:"Depart: Hilton Mainz", type:"hotel", icon:"🚌", coords:[50.0050, 8.2800], desc:"Leave the hotel for the Rhine cruise embarkation point."},
     {t:"09:30", name:"Rhine River Cruise", type:"sight", icon:"⛴️", coords:[50.0381, 7.8967], wiki:"Rhine_Gorge", desc:"Cruise downstream passing half-timbered villages. Enjoy the blooming spring foliage."},
     {t:"12:00", name:"Bacharach Vineyard Walk", type:"sight", icon:"🍇", coords:[50.0583, 7.7686], wiki:"Bacharach", desc:"Disembark in Bacharach for a vineyard walk with a Local Expert offering insight into this UNESCO-listed wine region."},
     {t:"13:30", name:"Stüber's Restaurant", type:"sight", icon:"🍽️", coords:[50.0580, 7.7700], desc:"Enjoy regional, seasonal ingredients alongside a tasting of local Middle Rhine wines."},
@@ -233,274 +301,602 @@ const DAYS = [
   ]}
 ];
 
-/* ============ STATE ============ */
+/* ============ STATE & ROUTING ============ */
 let currentDay = "global";
-let map, layerGroup;
+let map, baseLayer, markerLayer, routeLayer;
+let currentBounds = null;
+let renderSerial = 0;
 
 const tileUrls = {
   dark: "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png",
   light: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
 };
 
-let theme = (function(){try{return localStorage.getItem("ger2027_theme")||"light"}catch(e){return "light"}})();
+const OSRM_BASE = "https://router.project-osrm.org/route/v1/driving";
+const routeCache = new Map();
+const imageCache = new Map();
+
+let theme = (function(){
+  try{return localStorage.getItem("ger2027_theme") || "light";}
+  catch(e){return "light";}
+})();
+
+/* A deliberately simplified overview route. Local sightseeing and optional
+   excursions remain on their individual day maps instead of distorting the
+   full-tour line. modeFromPrev describes the segment into each node. */
+const GLOBAL_ROUTE = [
+  {day:0,  name:"Berlin", coords:DAYS[0].stops[0].coords},
+  {day:2,  name:"Dresden", coords:DAYS[2].stops[4].coords, modeFromPrev:"drive"},
+  {day:3,  name:"Weimar", coords:DAYS[3].stops[1].coords, modeFromPrev:"drive"},
+  {day:3,  name:"Rothenburg ob der Tauber", coords:DAYS[3].stops[4].coords, modeFromPrev:"drive"},
+  {day:5,  name:"Frankfurt", coords:DAYS[5].stops[1].coords, modeFromPrev:"drive"},
+  {day:5,  name:"Mainz", coords:DAYS[5].stops[4].coords, modeFromPrev:"drive"},
+  {day:6,  name:"Rhine cruise embarkation", coords:DAYS[6].stops[1].coords, modeFromPrev:"drive"},
+  {day:6,  name:"Bacharach", coords:DAYS[6].stops[2].coords, modeFromPrev:"boat"},
+  {day:6,  name:"Mainz", coords:DAYS[6].stops[4].coords, modeFromPrev:"drive"},
+  {day:7,  name:"Heidelberg", coords:DAYS[7].stops[1].coords, modeFromPrev:"drive"},
+  {day:7,  name:"Black Forest", coords:DAYS[7].stops[2].coords, modeFromPrev:"drive"},
+  {day:7,  name:"Schwangau", coords:DAYS[7].stops[4].coords, modeFromPrev:"drive"},
+  {day:9,  name:"Oberammergau", coords:DAYS[9].stops[1].coords, modeFromPrev:"drive"},
+  {day:9,  name:"Dachau Memorial Site", coords:DAYS[9].stops[2].coords, modeFromPrev:"drive"},
+  {day:9,  name:"Munich", coords:DAYS[9].stops[3].coords, modeFromPrev:"drive"},
+  {day:13, name:"Munich Airport", coords:DAYS[13].stops[2].coords, modeFromPrev:"transit"}
+];
 
 function haversineKm(a,b){
-  const R=6371, dLa=(b[0]-a[0])*Math.PI/180, dLo=(b[1]-a[1])*Math.PI/180;
-  const la1=a[0]*Math.PI/180, la2=b[0]*Math.PI/180;
-  const h=Math.sin(dLa/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLo/2)**2;
+  const R=6371;
+  const dLa=(b[0]-a[0])*Math.PI/180;
+  const dLo=(b[1]-a[1])*Math.PI/180;
+  const la1=a[0]*Math.PI/180;
+  const la2=b[0]*Math.PI/180;
+  const h=Math.sin(dLa/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLo/2)**2;
   return 2*R*Math.asin(Math.sqrt(h));
 }
 
-function resolveLeg(a,b){
-  if(!a||!b || !a.coords || !b.coords) return null;
-  const km = haversineKm(a.coords, b.coords);
-  const mi = km * 0.621371;
-  if(a.icon==="🚆") return {mode:"transit", label:`S-Bahn (Commuter Train): approx. 40-45 mins`, generated:true};
-  if(a.icon==="⛴️") return {mode:"boat", label:`Rhine River Cruise: approx. ${km.toFixed(0)} km`, generated:true};
-  if(km > 50 || a.icon==="✈️" || b.icon==="✈️") return {mode:"drive", label:`Motorcoach Route: approx. ${km.toFixed(0)} km (${mi.toFixed(0)} mi)`, generated:true};
-  if(km < 3) return {mode:"walk", label:`Local distance: ${(km).toFixed(1)} km (${mi.toFixed(1)} mi)`, generated:true};
-  return {mode:"car", label:`Driving: approx. ${km.toFixed(1)} km (${mi.toFixed(1)} mi)`, generated:true};
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>'"]/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;"
+  })[ch]);
 }
 
+function formatDistance(km){
+  const mi=km*0.621371;
+  const digits=km<10 ? 1 : 0;
+  return `${km.toFixed(digits)} km (${mi.toFixed(digits)} mi)`;
+}
+
+function formatDuration(minutes){
+  if(!Number.isFinite(minutes)) return "";
+  const total=Math.max(1,Math.round(minutes));
+  if(total<60) return `${total} min`;
+  const h=Math.floor(total/60), m=total%60;
+  return m ? `${h} hr ${m} min` : `${h} hr`;
+}
+
+function modeIcon(mode){
+  return ({drive:"🚐", walk:"🚶", boat:"⛴️", transit:"🚆"})[mode] || "➡️";
+}
+
+function getLegMeta(dayIndex, legIndex, a, b){
+  const km=haversineKm(a.coords,b.coords);
+  let mode="drive";
+  if(a.icon==="⛴️") mode="boat";
+  else if(a.icon==="🚆" || b.icon==="✈️") mode="transit";
+  else if(km<=2.5) mode="walk";
+  return {
+    mode,
+    optional:a.type==="optional" || b.type==="optional",
+    directKm:km,
+    key:`${dayIndex}:${legIndex}`
+  };
+}
+
+function initialLegLabel(meta){
+  const optional=meta.optional ? "Optional · " : "";
+  if(meta.mode==="drive") return `${optional}${modeIcon(meta.mode)} Road route: calculating…`;
+  if(meta.mode==="walk") return `${optional}${modeIcon(meta.mode)} Walking link: about ${formatDistance(meta.directKm)} direct`;
+  if(meta.mode==="boat") return `${optional}${modeIcon(meta.mode)} Cruise segment: schematic river connection`;
+  return `${optional}${modeIcon(meta.mode)} Transit segment: schematic line; allow about 40–45 min for the airport S-Bahn`;
+}
+
+const GOOGLE_MAP_QUERY_OVERRIDES={
+  "Depart: Crowne Plaza Berlin City Center":"Crowne Plaza Berlin City Centre, Berlin, Germany",
+  "Tiergarten & Reichstag":"Reichstag Building, Platz der Republik 1, Berlin, Germany",
+  "Potsdam Palace":"Sanssouci Palace, Potsdam, Germany",
+  "Depart: Berlin":"Crowne Plaza Berlin City Centre, Berlin, Germany",
+  "Frauenkirche":"Frauenkirche Dresden, Dresden, Germany",
+  "Procession of the Princes":"Fürstenzug, Dresden, Germany",
+  "Zwinger Palace":"Dresdner Zwinger, Dresden, Germany",
+  "Depart: Hilton Dresden":"Hilton Dresden, Dresden, Germany",
+  "Rothenburg ob der Tauber":"Marktplatz Rothenburg ob der Tauber, Germany",
+  "Dine-Around Evening":"Marktplatz Rothenburg ob der Tauber, Germany",
+  "Historic City Walls Walk":"Rothenburg Town Walls, Rothenburg ob der Tauber, Germany",
+  "Nuremberg":"Nuremberg Old Town, Nuremberg, Germany",
+  "Depart: Rothenburg":"Hotel Altes Brauhaus, Rothenburg ob der Tauber, Germany",
+  "The Römer":"Römer, Frankfurt am Main, Germany",
+  "Apfelwein Tasting":"Sachsenhausen, Frankfurt am Main, Germany",
+  "Depart: Hilton Mainz":"Hilton Mainz, Mainz, Germany",
+  "Rhine River Cruise":"Upper Middle Rhine Valley, Germany",
+  "Bacharach Vineyard Walk":"Bacharach, Germany",
+  "Return: Hilton Mainz":"Hilton Mainz, Mainz, Germany",
+  "Depart: Mainz":"Hilton Mainz, Mainz, Germany",
+  "Heidelberg Altstadt":"Heidelberg Old Town, Heidelberg, Germany",
+  "Black Forest Artisan Workshop":"Black Forest, Germany",
+  "Black Forest Gateau":"Black Forest, Germany",
+  "Hotel Ameron Neuschwanstein":"AMERON Neuschwanstein Alpsee Resort & Spa, Schwangau, Germany",
+  "Return: Hotel Ameron":"AMERON Neuschwanstein Alpsee Resort & Spa, Schwangau, Germany",
+  "Depart: Schwangau":"AMERON Neuschwanstein Alpsee Resort & Spa, Schwangau, Germany",
+  "Dachau Memorial Site":"Dachau Concentration Camp Memorial Site, Dachau, Germany",
+  "Marienplatz & Glockenspiel":"Rathaus-Glockenspiel, Marienplatz, Munich, Germany",
+  "St. Peter's Church":"St. Peter's Church, Rindermarkt 1, Munich, Germany",
+  "Hofbräuhaus":"Hofbräuhaus München, Munich, Germany",
+  "English Garden":"English Garden, Munich, Germany",
+  "Munich Residence":"Munich Residenz, Munich, Germany",
+  "Theresienwiese (Springfest)":"Theresienwiese, Munich, Germany",
+  "Festhalle Bayernland":"Festhalle Bayernland, Theresienwiese, Munich, Germany",
+  "Tanz in den Mai (Walpurgisnacht)":"Marienplatz, Munich, Germany",
+  "Depart: Mercure Hotel München City Center":"Mercure Hotel München City Center, Munich, Germany",
+  "Munich International Airport":"Munich International Airport, Germany"
+};
+
+const GOOGLE_MAP_AREAS=[
+  {name:"Berlin",coords:[52.5200,13.4050]},
+  {name:"Potsdam",coords:[52.3906,13.0645]},
+  {name:"Dresden",coords:[51.0504,13.7373]},
+  {name:"Weimar",coords:[50.9795,11.3235]},
+  {name:"Rothenburg ob der Tauber",coords:[49.3773,10.1797]},
+  {name:"Nuremberg",coords:[49.4521,11.0767]},
+  {name:"Frankfurt am Main",coords:[50.1109,8.6821]},
+  {name:"Mainz",coords:[49.9929,8.2473]},
+  {name:"Bacharach",coords:[50.0577,7.7696]},
+  {name:"Heidelberg",coords:[49.3988,8.6724]},
+  {name:"Black Forest",coords:[48.3000,8.1500]},
+  {name:"Schwangau",coords:[47.5770,10.7340]},
+  {name:"Füssen",coords:[47.5696,10.7004]},
+  {name:"Oberammergau",coords:[47.5960,11.0640]},
+  {name:"Dachau",coords:[48.2600,11.4340]},
+  {name:"Munich",coords:[48.1374,11.5755]}
+];
+
+function cleanGoogleMapName(name){
+  return String(name||"")
+    .replace(/^(Depart|Return):\s*/i,"")
+    .replace(/\s*\((Springfest|Walpurgisnacht)\)\s*/gi," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function nearestGoogleMapArea(coords){
+  if(!coords) return "Germany";
+  let best=GOOGLE_MAP_AREAS[0], bestKm=Infinity;
+  GOOGLE_MAP_AREAS.forEach(area=>{
+    const km=haversineKm(coords,area.coords);
+    if(km<bestKm){best=area;bestKm=km;}
+  });
+  return best?.name||"Germany";
+}
+
+function googlePlaceQuery(stop){
+  if(GOOGLE_MAP_QUERY_OVERRIDES[stop.name]) return GOOGLE_MAP_QUERY_OVERRIDES[stop.name];
+  const place=cleanGoogleMapName(stop.name);
+  const area=nearestGoogleMapArea(stop.coords);
+  return `${place}, ${area}, Germany`;
+}
+
+function mapsSearchUrl(stop){
+  // A named place query prompts Google Maps to open the POI card instead of
+  // displaying only a latitude/longitude coordinate card.
+  const query=googlePlaceQuery(stop);
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
+function mapsDirectionsUrl(a,b,mode){
+  const origin=`${a.coords[0]},${a.coords[1]}`;
+  const destination=`${b.coords[0]},${b.coords[1]}`;
+  const travelMode=mode==="walk" ? "walking" : mode==="transit" ? "transit" : "driving";
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=${travelMode}`;
+}
+
+function setMapStatus(message,isError=false){
+  const el=document.getElementById("mapStatus");
+  if(!el) return;
+  el.textContent=message;
+  el.classList.toggle("route-error",isError);
+}
+
+/* ============ CONTROLS ============ */
+const tabsWrapper=document.getElementById("tabsWrapper");
+const toggleTabsBtn=document.getElementById("toggleTabsBtn");
+
+toggleTabsBtn.onclick=()=>{
+  const collapsed=tabsWrapper.classList.toggle("collapsed");
+  toggleTabsBtn.textContent=collapsed ? "↕️ Show Daily Menu" : "↕️ Hide Daily Menu";
+  toggleTabsBtn.setAttribute("aria-expanded",String(!collapsed));
+  window.setTimeout(()=>{
+    if(map){
+      map.invalidateSize({pan:false});
+      fitCurrentBounds(false);
+    }
+  },330);
+};
+
+document.getElementById("scrollLeft").onclick=()=>{
+  document.getElementById("tabs").scrollBy({left:-300,behavior:"smooth"});
+};
+document.getElementById("scrollRight").onclick=()=>{
+  document.getElementById("tabs").scrollBy({left:300,behavior:"smooth"});
+};
+
 /* ============ TABS ============ */
-const tabsEl = document.getElementById("tabs");
+const tabsEl=document.getElementById("tabs");
 function buildTabs(){
-  tabsEl.innerHTML = "";
-  
-  const gb = document.createElement("button");
-  gb.className = "tab" + (currentDay==="global" ? " active" : "");
-  gb.innerHTML = `🗺️ Global View<small>Full Route</small>`;
-  gb.onclick = ()=>selectDay("global");
+  tabsEl.innerHTML="";
+  const gb=document.createElement("button");
+  gb.type="button";
+  gb.className="tab"+(currentDay==="global" ? " active" : "");
+  gb.innerHTML="🗺️ Global View<small>Major route</small>";
+  gb.onclick=()=>selectDay("global");
   tabsEl.appendChild(gb);
 
   DAYS.forEach((d,i)=>{
-    const b = document.createElement("button");
-    b.className = "tab" + (currentDay===i ? " active" : "");
-    b.innerHTML = `${d.date} · ${d.dow.split('·')[0].trim()}<small>${d.theme.split(" ")[0]}...</small>`;
-    b.onclick = ()=>selectDay(i);
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="tab"+(currentDay===i ? " active" : "");
+    b.innerHTML=`${escapeHtml(d.date)} · ${escapeHtml(d.dow.split("·")[0].trim())}<small>${escapeHtml(d.theme.split(" ")[0])}...</small>`;
+    b.onclick=()=>selectDay(i);
     tabsEl.appendChild(b);
+  });
+
+  requestAnimationFrame(()=>{
+    const active=tabsEl.querySelector(".tab.active");
+    active?.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
   });
 }
 
-/* ============ RENDER LOGIC ============ */
+/* ============ LIST RENDERING ============ */
 function selectDay(i){
-  currentDay = i;
+  currentDay=i;
   buildTabs();
-  if(currentDay === "global"){
-      renderGlobalList();
-      renderMap();
-  } else {
-      renderList(); 
-      renderMap();
-  }
+  if(currentDay==="global") renderGlobalList();
+  else renderList();
+  renderMap();
 }
 
-function renderGlobalList() {
-    const left = document.getElementById("left");
-    let allStops = [];
-    DAYS.forEach(d => { allStops = allStops.concat(d.stops); });
-    
-    let gKm = 0;
-    for(let i=0; i<allStops.length-1; i++){
-        if(allStops[i].coords && allStops[i+1].coords) {
-            gKm += haversineKm(allStops[i].coords, allStops[i+1].coords);
-        }
-    }
-    
-    let html = `<div class="dayHead">
-      <h2>🗺️ Best of Germany: Berlin to Munich</h2>
-      <div class="meta">14 Days Guided Tour | Featuring Frühlingsfest & May Day</div>
-      <div class="budget" style="margin-top:12px;">🚐 Total Est. Distance: ~${gKm.toFixed(0)} km (${(gKm*0.621371).toFixed(0)} mi)</div>
+function renderGlobalList(){
+  const left=document.getElementById("left");
+  let html=`<div class="dayHead">
+    <h2>🗺️ Best of Germany: Berlin to Munich</h2>
+    <div class="meta">14 Days Guided Tour | Major overnight and transfer route</div>
+    <div class="budget" id="distanceSummary" style="margin-top:12px;">🚐 Calculating mapped route…</div>
+    <div class="route-note">Local sightseeing and optional excursions are intentionally shown only on their daily maps.</div>
+  </div>`;
+
+  DAYS.forEach((d,i)=>{
+    const hue=(i*360/DAYS.length)%360;
+    const color=`hsl(${hue},70%,50%)`;
+    html+=`<div class="card" onclick="selectDay(${i})" style="border-left:6px solid ${color};">
+      <div class="cbody">
+        <div class="crow1">
+          <span class="num" style="background:${color};color:#fff;">D${i+1}</span>
+          <span class="cname">${escapeHtml(d.date)} - ${escapeHtml(d.theme)}</span>
+        </div>
+        <div class="cdesc" style="margin-top:6px;"><b>Stops:</b> ${d.stops.map(s=>escapeHtml(s.name)).join(" ➔ ")}</div>
+      </div>
     </div>`;
-    
-    DAYS.forEach((d, i) => {
-        const hue = (i * 360 / 14) % 360;
-        const color = `hsl(${hue}, 70%, 50%)`;
-        html += `<div class="card" onclick="selectDay(${i})" style="border-left: 6px solid ${color};">
-            <div class="cbody">
-                <div class="crow1">
-                    <span class="num" style="background:${color}; color:#fff;">D${i+1}</span>
-                    <span class="cname">${d.date} - ${d.theme}</span>
-                </div>
-                <div class="cdesc" style="margin-top:6px;"><b>Stops:</b> ${d.stops.map(s=>s.name).join(" ➔ ")}</div>
-            </div>
-        </div>`;
-    });
-    left.innerHTML = html;
-    left.scrollTop = 0;
+  });
+  left.innerHTML=html;
+  left.scrollTop=0;
 }
 
 function renderList(){
-  const d = DAYS[currentDay];
-  const stops = d.stops;
-  const left = document.getElementById("left");
-  
-  let dailyKm = 0;
-  for(let i=0; i<stops.length-1; i++){
-      if(stops[i].coords && stops[i+1].coords) dailyKm += haversineKm(stops[i].coords, stops[i+1].coords);
-  }
-  
-  let html = `<div class="dayHead">
-    <h2>${d.date} · ${d.dow}</h2>
-    <div class="meta">${d.theme}</div>
-    <div class="budget">💰 ${d.budget}</div>
-    <div class="budget" style="margin-left:6px;">🚗 Dist.: ~${dailyKm.toFixed(1)} km (${(dailyKm*0.621371).toFixed(1)} mi)</div>
+  const d=DAYS[currentDay];
+  const stops=d.stops;
+  const left=document.getElementById("left");
+  let html=`<div class="dayHead">
+    <h2>${escapeHtml(d.date)} · ${escapeHtml(d.dow)}</h2>
+    <div class="meta">${escapeHtml(d.theme)}</div>
+    <div class="budget">💰 ${escapeHtml(d.budget)}</div>
+    <div class="budget" id="distanceSummary" style="margin-left:6px;">🧭 Calculating mapped route…</div>
   </div>`;
-  if(d.notices) d.notices.forEach(n=> html += `<div class="notice">ℹ️ ${n}</div>`);
+  if(d.notices) d.notices.forEach(n=>html+=`<div class="notice">ℹ️ ${escapeHtml(n)}</div>`);
 
   stops.forEach((s,idx)=>{
-    let cls = "";
-    if(s.type === "hotel") cls = "hotel";
-    if(s.type === "optional") cls = "opt";
-    
-    let tagHtml = "";
-    if(s.type === "optional") tagHtml += `<span class="tag opt">⭐ Optional Experience</span>`;
+    const cls=s.type==="hotel" ? "hotel" : s.type==="optional" ? "opt" : "";
+    const tagHtml=s.type==="optional" ? '<span class="tag opt">⭐ Optional Experience</span>' : "";
+    const gmap=mapsSearchUrl(s);
+    const wikiUrl=s.wiki ? `https://en.wikipedia.org/wiki/${encodeURIComponent(s.wiki)}` : "";
+    const prev=idx>0 ? stops[idx-1] : null;
+    const incoming=prev ? getLegMeta(currentDay,idx-1,prev,s) : null;
+    const directions=incoming && incoming.mode!=="boat" ? mapsDirectionsUrl(prev,s,incoming.mode) : "";
 
-    // THE FIX: Search by exact Location Name + City, bypassing proxy filter
-    const gSchema = "ht" + "tps://";
-    const gDomain = "www" + ".google." + "com";
-    const gPath = "/maps/search/?api=1&query=";
-    const searchQuery = encodeURIComponent(s.name + ", " + d.city);
-    const gmap = gSchema + gDomain + gPath + searchQuery;
-    
-    const wDomain = "en." + "wiki" + "pedia.org";
-    const wikiUrl = s.wiki ? gSchema + wDomain + "/wiki/" + encodeURIComponent(s.wiki) : "";
-
-    html += `<div class="card" id="card${idx}" onclick="focusStop(${idx})">
+    html+=`<div class="card" id="card${idx}" onclick="focusStop(${idx})">
       <div class="cardTop">
         <div class="thumb" id="thumb${idx}">${s.icon||"📍"}</div>
         <div class="cbody">
           <div class="crow1">
-            <span class="numIcon ${cls}" style="width:26px; height:26px; font-size:12px">${idx+1}</span>
-            <span class="ctime">${s.t||""}</span><span class="cname">${s.name}</span>
+            <span class="numIcon ${cls}" style="width:26px;height:26px;font-size:12px">${idx+1}</span>
+            <span class="ctime">${escapeHtml(s.t||"")}</span><span class="cname">${escapeHtml(s.name)}</span>
           </div>
-          ${tagHtml ? `<div class="tagrow">${tagHtml}</div>` : ''}
-          <div class="cdesc">${s.desc||""}</div>
-          ${s.sees ? `<div class="sees"><b>🔎 Highlights</b><ul>${s.sees.map(x=>`<li>${x}</li>`).join("")}</ul></div>` : ""}
+          ${tagHtml ? `<div class="tagrow">${tagHtml}</div>` : ""}
+          <div class="cdesc">${escapeHtml(s.desc||"")}</div>
+          ${s.sees ? `<div class="sees"><b>🔎 Highlights</b><ul>${s.sees.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>` : ""}
           <div class="clinks">
-            <a href="${gmap}" target="_blank" onclick="event.stopPropagation()">🗺️ Google Maps</a>
-            ${wikiUrl ? `<a href="${wikiUrl}" target="_blank" onclick="event.stopPropagation()">🌐 Wiki/Info</a>` : ""}
+            <a href="${gmap}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">🗺️ Place details in Google Maps</a>
+            ${directions ? `<a href="${directions}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">🧭 Directions from previous</a>` : ""}
+            ${wikiUrl ? `<a href="${wikiUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">🌐 Wiki/Info</a>` : ""}
           </div>
         </div>
       </div>
     </div>`;
-    
-    const lg = resolveLeg(s, stops[idx+1]);
-    if(lg){
-      html += `<div class="leg"><span class="dotline"><i></i></span>
-        <div><span class="mico">⬇️</span> ${lg.label}</div></div>`;
+
+    const next=stops[idx+1];
+    if(next){
+      const meta=getLegMeta(currentDay,idx,s,next);
+      html+=`<div class="leg"><span class="dotline"><i></i></span>
+        <div id="legMetric${idx}">${initialLegLabel(meta)}</div></div>`;
     }
   });
-  left.innerHTML = html;
-  left.scrollTop = 0;
-  
-  const imgCache = {};
-  stops.forEach(async (s,idx)=>{
+
+  left.innerHTML=html;
+  left.scrollTop=0;
+  loadStopImages(stops);
+}
+
+async function loadStopImages(stops){
+  stops.forEach(async(s,idx)=>{
     if(!s.wiki) return;
-    if(imgCache[s.wiki]===false) return;
+    let src=imageCache.get(s.wiki);
+    if(src===false) return;
     try{
-      const p1 = "h" + "t" + "t" + "p" + "s" + ":" + "/" + "/";
-      const w1 = "e" + "n" + "." + "w" + "i" + "k" + "i" + "p" + "e" + "d" + "i" + "a" + "." + "o" + "r" + "g";
-      const fetchUrl = p1 + w1 + "/a" + "p" + "i/r" + "e" + "s" + "t" + "_v1/p" + "a" + "g" + "e/s" + "u" + "m" + "m" + "a" + "r" + "y/" + encodeURIComponent(s.wiki);
-      
-      const r = await fetch(fetchUrl);
-      if(!r.ok) throw 0;
-      const j = await r.json();
-      const src = (j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
-      if(!src) throw 0;
-      imgCache[s.wiki] = src;
-      const el = document.getElementById("thumb"+idx);
-      if(el){
-        const img = new Image();
-        img.onload = ()=>{ el.innerHTML=""; el.appendChild(img); };
-        img.src = src;
+      if(!src){
+        const fetchUrl=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(s.wiki)}`;
+        const r=await fetch(fetchUrl);
+        if(!r.ok) throw new Error("Image unavailable");
+        const j=await r.json();
+        src=(j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
+        if(!src) throw new Error("No image");
+        imageCache.set(s.wiki,src);
       }
-    } catch(e) { imgCache[s.wiki]=false; }
+      if(currentDay==="global") return;
+      const el=document.getElementById(`thumb${idx}`);
+      if(!el) return;
+      const img=new Image();
+      img.alt="";
+      img.onload=()=>{if(el.isConnected){el.innerHTML="";el.appendChild(img);}};
+      img.src=src;
+    }catch(e){imageCache.set(s.wiki,false);}
   });
 }
 
+/* ============ MAP & ROUTE RENDERING ============ */
 function initMap(){
-  map = L.map("map",{zoomControl:true}).setView([50.5, 10.5], 6); 
-  L.tileLayer(tileUrls[theme],{
-    attribution:'© OpenStreetMap © CARTO', subdomains:"abcd", maxZoom:19
+  if(!window.L){
+    document.getElementById("map").innerHTML='<div class="notice" style="margin:20px">Map library could not be loaded. Check the internet connection or CDN access.</div>';
+    setMapStatus("Map unavailable",true);
+    return;
+  }
+  map=L.map("map",{zoomControl:true,preferCanvas:true}).setView([50.5,10.5],6);
+  baseLayer=L.tileLayer(tileUrls[theme],{
+    attribution:'© OpenStreetMap contributors © CARTO',subdomains:"abcd",maxZoom:19
   }).addTo(map);
-  layerGroup = L.layerGroup().addTo(map);
+  routeLayer=L.featureGroup().addTo(map);
+  markerLayer=L.featureGroup().addTo(map);
+
+  if("ResizeObserver" in window){
+    const observer=new ResizeObserver(()=>map.invalidateSize({pan:false}));
+    observer.observe(document.getElementById("mapWrap"));
+  }
 }
 
-function renderMap(){
-  layerGroup.clearLayers();
-  let stops = [];
-  let isGlobal = currentDay === "global";
-  
-  if (isGlobal) {
-      DAYS.forEach(d => { stops = stops.concat(d.stops); });
-  } else {
-      stops = DAYS[currentDay].stops;
+function fitCurrentBounds(animate=true){
+  if(!map || !currentBounds || !currentBounds.isValid()) return;
+  map.fitBounds(currentBounds.pad(0.14),{animate,maxZoom:13});
+}
+
+function dayColor(dayIdx){
+  const hue=(dayIdx*360/DAYS.length)%360;
+  return `hsl(${hue},75%,45%)`;
+}
+
+function routeStyle(meta,isGlobal){
+  if(meta.optional) return {color:"#9f7aea",weight:4,opacity:.9,dashArray:"10 8"};
+  if(meta.mode==="walk") return {color:"#5fb878",weight:4,opacity:.9,dashArray:"2 7"};
+  if(meta.mode==="boat") return {color:"#5b9bd5",weight:4,opacity:.9,dashArray:"8 7"};
+  if(meta.mode==="transit") return {color:"#5b9bd5",weight:4,opacity:.9,dashArray:"12 6 2 6"};
+  return {color:isGlobal ? "#d9a94c" : "#d9a94c",weight:4,opacity:.88};
+}
+
+function updateLegMetric(legIndex,text,isFallback=false){
+  if(currentDay==="global") return;
+  const el=document.getElementById(`legMetric${legIndex}`);
+  if(!el) return;
+  el.textContent=text;
+  el.classList.toggle("route-error",isFallback);
+}
+
+function routeCacheKey(a,b){
+  return [a.coords[0].toFixed(5),a.coords[1].toFixed(5),b.coords[0].toFixed(5),b.coords[1].toFixed(5)].join(",");
+}
+
+async function fetchRoadRoute(a,b){
+  const key=routeCacheKey(a,b);
+  if(routeCache.has(key)) return routeCache.get(key);
+  const promise=(async()=>{
+    const coords=`${a.coords[1]},${a.coords[0]};${b.coords[1]},${b.coords[0]}`;
+    const url=`${OSRM_BASE}/${coords}?overview=full&geometries=geojson&steps=false`;
+    const controller=new AbortController();
+    const timer=window.setTimeout(()=>controller.abort(),12000);
+    let response;
+    try{
+      response=await fetch(url,{signal:controller.signal});
+    }finally{
+      window.clearTimeout(timer);
+    }
+    if(!response.ok) throw new Error(`Routing service returned ${response.status}`);
+    const data=await response.json();
+    if(data.code!=="Ok" || !data.routes?.length) throw new Error("No road route found");
+    const route=data.routes[0];
+    return {
+      points:route.geometry.coordinates.map(([lon,lat])=>[lat,lon]),
+      distanceKm:route.distance/1000,
+      durationMin:route.duration/60
+    };
+  })();
+  routeCache.set(key,promise);
+  try{return await promise;}
+  catch(e){routeCache.delete(key);throw e;}
+}
+
+async function drawLeg(a,b,meta,isGlobal,serial,legIndex){
+  const style=routeStyle(meta,isGlobal);
+  const optionalPrefix=meta.optional ? "Optional · " : "";
+
+  if(meta.mode!=="drive"){
+    if(serial!==renderSerial) return null;
+    const line=L.polyline([a.coords,b.coords],style).addTo(routeLayer);
+    const label=meta.mode==="walk"
+      ? `${optionalPrefix}Walk · ${formatDistance(meta.directKm)} direct estimate`
+      : meta.mode==="boat"
+        ? `${optionalPrefix}Cruise · schematic connection (${formatDistance(meta.directKm)} direct)`
+        : `${optionalPrefix}Transit · schematic connection (${formatDistance(meta.directKm)} direct)`;
+    line.bindTooltip(label,{sticky:true});
+    updateLegMetric(legIndex,`${modeIcon(meta.mode)} ${label}`);
+    return {distanceKm:meta.directKm,durationMin:null,fallback:false,schematic:true};
   }
-  
-  const pts = [];
-  stops.forEach((s,idx)=>{
+
+  try{
+    const routed=await fetchRoadRoute(a,b);
+    if(serial!==renderSerial) return null;
+    const line=L.polyline(routed.points,style).addTo(routeLayer);
+    const label=`${optionalPrefix}Road · ${formatDistance(routed.distanceKm)} · ${formatDuration(routed.durationMin)}`;
+    line.bindTooltip(label,{sticky:true});
+    updateLegMetric(legIndex,`${modeIcon(meta.mode)} ${label}`);
+    return {...routed,fallback:false,schematic:false};
+  }catch(error){
+    if(serial!==renderSerial) return null;
+    const fallbackKm=meta.directKm;
+    const fallbackStyle={...style,dashArray:"6 8",opacity:.65};
+    L.polyline([a.coords,b.coords],fallbackStyle).addTo(routeLayer)
+      .bindTooltip(`${optionalPrefix}Road route unavailable; direct fallback ${formatDistance(fallbackKm)}`,{sticky:true});
+    updateLegMetric(legIndex,`${modeIcon(meta.mode)} ${optionalPrefix}Road route unavailable · direct fallback ${formatDistance(fallbackKm)}`,true);
+    return {distanceKm:fallbackKm,durationMin:null,fallback:true,schematic:true};
+  }
+}
+
+async function runWithConcurrency(tasks,limit=3){
+  const results=new Array(tasks.length);
+  let cursor=0;
+  async function worker(){
+    while(true){
+      const index=cursor++;
+      if(index>=tasks.length) return;
+      results[index]=await tasks[index]();
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(limit,tasks.length)},worker));
+  return results;
+}
+
+async function renderMap(){
+  if(!map || !markerLayer || !routeLayer) return;
+  const serial=++renderSerial;
+  markerLayer.clearLayers();
+  routeLayer.clearLayers();
+  setMapStatus("Building mapped route…");
+
+  const isGlobal=currentDay==="global";
+  const nodes=isGlobal
+    ? GLOBAL_ROUTE.map((node,index)=>({...node,index}))
+    : DAYS[currentDay].stops.map((stop,index)=>({...stop,index,day:currentDay}));
+  const points=[];
+
+  nodes.forEach((s,idx)=>{
     if(!s.coords) return;
-    pts.push(s.coords);
-    
-    let cls = "";
-    let markerNum = isGlobal ? "" : (idx+1);
-    
-    if(isGlobal) {
-        let dayIdx = 0;
-        let counter = 0;
-        for(let d=0; d<DAYS.length; d++){
-            counter += DAYS[d].stops.length;
-            if(idx < counter) { dayIdx = d; break; }
-        }
-        const hue = (dayIdx * 360 / 14) % 360;
-        const color = `hsl(${hue}, 75%, 45%)`;
-        const icon = L.divIcon({className:"", html:`<div class="globalIcon" style="background:${color}; width:16px; height:16px;"></div>`, iconSize:[16,16], iconAnchor:[8,8]});
-        L.marker(s.coords,{icon}).addTo(layerGroup).bindPopup(`<b>Day ${dayIdx+1}: ${s.name}</b>`);
-    } else {
-        if(s.type === "hotel") cls = "hotel";
-        if(s.type === "optional") cls = "opt";
-        const icon = L.divIcon({className:"", html:`<div class="numIcon ${cls}" style="width:26px;height:26px;font-size:13px">${markerNum}</div>`, iconSize:[26,26], iconAnchor:[13,13]});
-        L.marker(s.coords,{icon}).addTo(layerGroup)
-          .bindPopup(`<b>${idx+1}. ${s.name}</b><br>${s.desc}`)
-          .on("click",()=>highlightCard(idx));
+    points.push(s.coords);
+    if(isGlobal){
+      const color=dayColor(s.day);
+      const icon=L.divIcon({
+        className:"",
+        html:`<div class="globalIcon" style="background:${color};width:18px;height:18px;"></div>`,
+        iconSize:[18,18],iconAnchor:[9,9]
+      });
+      L.marker(s.coords,{icon}).addTo(markerLayer)
+        .bindPopup(`<b>Day ${s.day+1}: ${escapeHtml(s.name)}</b>`);
+    }else{
+      const cls=s.type==="hotel" ? "hotel" : s.type==="optional" ? "opt" : "";
+      const icon=L.divIcon({
+        className:"",
+        html:`<div class="numIcon ${cls}" style="width:28px;height:28px;font-size:13px">${idx+1}</div>`,
+        iconSize:[28,28],iconAnchor:[14,14]
+      });
+      L.marker(s.coords,{icon}).addTo(markerLayer)
+        .bindPopup(`<b>${idx+1}. ${escapeHtml(s.name)}</b><br>${escapeHtml(s.desc||"")}`)
+        .on("click",()=>highlightCard(idx));
     }
   });
-  
-  if(pts.length > 1){
-    L.polyline(pts, {color: isGlobal ? "#9aa0ad" : "#d9a94c", weight: 3, opacity: 0.8, dashArray: isGlobal ? "4 6" : ""}).addTo(layerGroup);
-    map.fitBounds(L.latLngBounds(pts).pad(0.15));
-  } else if (pts.length === 1) {
-    map.flyTo(pts[0], 12);
+
+  currentBounds=points.length ? L.latLngBounds(points) : null;
+  map.invalidateSize({pan:false});
+  fitCurrentBounds(false);
+
+  const jobs=[];
+  for(let i=0;i<nodes.length-1;i++){
+    const a=nodes[i], b=nodes[i+1];
+    if(!a.coords || !b.coords) continue;
+    const meta=isGlobal
+      ? {mode:b.modeFromPrev||"drive",optional:false,directKm:haversineKm(a.coords,b.coords),key:`global:${i}`}
+      : getLegMeta(currentDay,i,a,b);
+    jobs.push(()=>drawLeg(a,b,meta,isGlobal,serial,i));
+  }
+
+  const results=(await runWithConcurrency(jobs,3)).filter(Boolean);
+  if(serial!==renderSerial) return;
+  routeLayer.bringToBack();
+
+  const totalKm=results.reduce((sum,r)=>sum+(r.distanceKm||0),0);
+  const fallbackCount=results.filter(r=>r.fallback).length;
+  const schematicCount=results.filter(r=>r.schematic).length;
+  const distanceEl=document.getElementById("distanceSummary");
+  if(distanceEl){
+    const qualifier=fallbackCount ? "partly direct-line fallback" : schematicCount ? "road + schematic segments" : "road-routed";
+    distanceEl.textContent=`🧭 Mapped distance: ~${formatDistance(totalKm)} · ${qualifier}`;
+  }
+
+  if(fallbackCount){
+    setMapStatus(`${fallbackCount} road leg${fallbackCount===1?"":"s"} could not be routed; dashed direct fallback shown.`,true);
+  }else if(schematicCount){
+    setMapStatus("Road legs follow OSRM geometry; walking, cruise, and transit lines are schematic.");
+  }else{
+    setMapStatus("Road route loaded.");
   }
 }
 
 function focusStop(idx){
-  if(currentDay === "global") return;
-  const s = DAYS[currentDay].stops[idx];
-  if(s && s.coords){ map.flyTo(s.coords, 14, {duration:.6}); }
+  if(currentDay==="global" || !map) return;
+  const s=DAYS[currentDay].stops[idx];
+  if(s?.coords) map.flyTo(s.coords,14,{duration:.6});
   highlightCard(idx);
 }
+
 function highlightCard(idx){
   document.querySelectorAll(".card").forEach(c=>c.classList.remove("focus"));
-  const el = document.getElementById("card"+idx);
-  if(el){ el.classList.add("focus"); el.scrollIntoView({behavior:"smooth", block:"nearest"}); }
-}
-
-function applyTheme(){
-  document.body.classList.toggle("light", theme==="light");
-  document.getElementById("themeBtn").textContent = theme==="light" ? "🌙 Dark Mode" : "☀️ Light Mode";
-  try{ localStorage.setItem("ger2027_theme", theme); }catch(e){}
-  
-  if(map) {
-      map.eachLayer(layer => { if(layer instanceof L.TileLayer) map.removeLayer(layer); });
-      L.tileLayer(tileUrls[theme],{ attribution:'© OpenStreetMap © CARTO', subdomains:"abcd", maxZoom:19 }).addTo(map);
-      layerGroup.bringToFront();
+  const el=document.getElementById(`card${idx}`);
+  if(el){
+    el.classList.add("focus");
+    el.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 }
 
-document.getElementById("themeBtn").onclick = ()=>{
-  theme = (theme==="light") ? "dark" : "light";
+function applyTheme(){
+  document.body.classList.toggle("light",theme==="light");
+  document.getElementById("themeBtn").textContent=theme==="light" ? "🌙 Dark Mode" : "☀️ Light Mode";
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content",theme==="light" ? "#f3f1ea" : "#0e1015");
+  try{localStorage.setItem("ger2027_theme",theme);}catch(e){}
+  if(baseLayer) baseLayer.setUrl(tileUrls[theme]);
+}
+
+document.getElementById("themeBtn").onclick=()=>{
+  theme=theme==="light" ? "dark" : "light";
   applyTheme();
 };
 
@@ -508,6 +904,7 @@ document.getElementById("themeBtn").onclick = ()=>{
 applyTheme();
 initMap();
 selectDay("global");
+
 </script>
 </body>
 </html>
